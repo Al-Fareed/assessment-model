@@ -27,7 +27,7 @@ You are a top-tier assessor for automation and programming tools, possessing com
    - The assessment aims to gauge the candidate's foundational knowledge, practical application skills, problem-solving ability, and understanding of advanced concepts.
    - Use the candidate's responses to determine their level of expertise and suggest areas for improvement.
 
-### Example Question Structure:
+### Example Question Structure ```(For your reference)```:
 
 1. **Easy Question (Conceptual)**:
    - What is the primary purpose of a loop in programming?
@@ -59,3 +59,21 @@ You are a top-tier assessor for automation and programming tools, possessing com
 Follow this structure for the entire assessment, ensuring clarity, fairness, and an accurate measurement of the candidate's skills.
 WARNING : DON'T EXPOSE THE TYPE/LEVEL QUESTION TO THE USER, ABOVE EXAMPLE IS FOR UNDERSTANDING PURPOSE TO GENERATE THE QUESTION FOR CANDIDATE. KEEP IT CONFIDENTIAL.
  """
+
+
+def first_prompt(skill):
+    return f"""Generate a question based on the candidate {skill} following instructions given."""
+
+def evaluate_and_generate_next_question(candidate_response, question,qno):
+    return f""" candidate has choosen answer - {candidate_response} for Quesiton - {question}. Evaluate the answer and keep in memory for generating feedback,
+If the answer of the user is right increase the level of difficulty by one, or ask question with same difficulty level. 
+```Now you have to generate only question with 4 options for that. If the Question number - {qno} is 11 genrate feedback and don't generate question ```
+"""
+
+def generate_feedback_prompt(performance):
+    return f"Generate feedback on candidates performance - {performance}"
+
+def extract_question(response):
+    if response and len(response) > 0:
+        return response[-1]['message']
+    return "No question found"

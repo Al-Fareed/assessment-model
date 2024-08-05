@@ -3,12 +3,15 @@ from dotenv import load_dotenv
 import os
 from prompt import get_instructions
 
+
 def load_api_key():
     load_dotenv()
     return os.getenv("OPENAI_API_KEY")
 
+
 def create_client(api_key):
     return openai.OpenAI(api_key=api_key)
+
 
 def create_assistant(client):
     assistant = client.beta.assistants.create(
@@ -19,15 +22,18 @@ def create_assistant(client):
     )
     return assistant
 
+
 def create_thread(client):
     return client.beta.threads.create()
 
-def create_message(client, thread_id, content):
+
+def create_message(client, content, thread_id):
     return client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
         content=content,
     )
+
 
 def run_assistant(client, thread_id, assistant_id):
     return client.beta.threads.runs.create_and_poll(
@@ -35,9 +41,23 @@ def run_assistant(client, thread_id, assistant_id):
         assistant_id=assistant_id,
     )
 
-def print_run_results(client, thread_id):
+
+def get_response(client, thread_id):
     messages = client.beta.threads.messages.list(thread_id=thread_id)
+    return messages
+
+
+def print_response(messages):
     print("messages: ")
     for message in messages:
-        assert message.content[0].type == "text"
-        print({"role": message.role, "message": message.content[0].text.value})
+        if message.content[0].type == "text":
+            print({"role": message.role, "message": message.content[0].text.value})
+
+
+def handle_message_and_run(client, content, thread_id, assistant_id):
+    create_message(client, content, thread_id)
+    run = run_assistant(client, thread_id, assistant_id)
+    print("Run completed with status: " + run.status)
+    if run.status == "completed":
+        return get_response(client, thread_id)
+    return None
