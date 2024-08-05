@@ -1,39 +1,43 @@
 import openai
 from dotenv import load_dotenv
 import os
-load_dotenv()
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from prompt import get_instructions
 
-assistant = client.beta.assistants.create(
-    name="Assessment model",
-    instructions='''Assume that you are a best assesser for any automation/programming tool 
-    also has the knowledge of all programming language  ''',
-    tools=[{"type": "code_interpreter"}],
-    model="gpt-4-1106-preview",
-)
+def load_api_key():
+    load_dotenv()
+    return os.getenv("OPENAI_API_KEY")
 
-thread = client.beta.threads.create()
+def create_client(api_key):
+    return openai.OpenAI(api_key=api_key)
 
-message = client.beta.threads.messages.create(
-    thread_id=thread.id,
-    role="user",
-    content="",
-)
+def create_assistant(client):
+    assistant = client.beta.assistants.create(
+        name="Assessment model",
+        instructions=get_instructions(),
+        tools=[{"type": "code_interpreter"}],
+        model="gpt-4-1106-preview",
+    )
+    return assistant
 
-run = client.beta.threads.runs.create_and_poll(
-    thread_id=thread.id,
-    assistant_id=assistant.id,
-    instructions="Please address the user as Jane Doe. The user has a premium account.",
-)
+def create_thread(client):
+    return client.beta.threads.create()
 
-print("Run completed with status: " + run.status)
+def create_message(client, thread_id, content):
+    return client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=content,
+    )
 
-if run.status == "completed":
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
+def run_assistant(client, thread_id, assistant_id):
+    return client.beta.threads.runs.create_and_poll(
+        thread_id=thread_id,
+        assistant_id=assistant_id,
+    )
 
+def print_run_results(client, thread_id):
+    messages = client.beta.threads.messages.list(thread_id=thread_id)
     print("messages: ")
     for message in messages:
         assert message.content[0].type == "text"
         print({"role": message.role, "message": message.content[0].text.value})
-
-    client.beta.assistants.delete(assistant.id)
