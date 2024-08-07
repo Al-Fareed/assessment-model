@@ -1,7 +1,7 @@
 import openai
 from dotenv import load_dotenv
 import os
-from prompt import get_instructions
+from src.prompt import get_instructions
 
 
 def load_api_key():
@@ -51,7 +51,7 @@ def print_response(messages):
     print("messages: ")
     for message in messages:
         if message.content[0].type == "text":
-            print({"role": message.role, "message": message.content[0].text.value})
+            print({"message": message.content[0].text.value})
 
 
 def handle_message_and_run(client, content, thread_id, assistant_id):

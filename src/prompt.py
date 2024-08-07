@@ -57,23 +57,25 @@ You are a top-tier assessor for automation and programming tools, possessing com
      - D) DELETE
 
 Follow this structure for the entire assessment, ensuring clarity, fairness, and an accurate measurement of the candidate's skills.
-WARNING : DON'T EXPOSE THE TYPE/LEVEL QUESTION TO THE USER, ABOVE EXAMPLE IS FOR UNDERSTANDING PURPOSE TO GENERATE THE QUESTION FOR CANDIDATE. KEEP IT CONFIDENTIAL.
+WARNING : ```DON'T EXPOSE THE TYPE/LEVEL QUESTION TO THE USER AND ANSWER```, ABOVE EXAMPLE IS FOR UNDERSTANDING PURPOSE TO GENERATE THE QUESTION FOR CANDIDATE. KEEP IT CONFIDENTIAL.
  """
 
 
 def first_prompt(skill):
-    return f"""Generate a question based on the candidate {skill} following instructions given."""
+    return f"""Generate a question based on the candidate skills - {skill} follow the instructions carefully."""
 
 def evaluate_and_generate_next_question(candidate_response, question,qno):
     return f""" candidate has choosen answer - {candidate_response} for Quesiton - {question}. Evaluate the answer and keep in memory for generating feedback,
 If the answer of the user is right increase the level of difficulty by one, or ask question with same difficulty level. 
 ```Now you have to generate only question with 4 options for that. If the Question number - {qno} is 11 genrate feedback and don't generate question ```
+DO NOT GIVE YOUR FEEDBACK NOW, YOU'LL BE PROMPTED TO GENERATE FEEDBACK. FOR NOW BASED ON THE CANDIDATE'S ANSWER GENERATE NEXT QUESTION WITH 4 OPTIONS
 """
 
 def generate_feedback_prompt(performance):
     return f"Generate feedback on candidates performance - {performance}"
 
 def extract_question(response):
-    if response and len(response) > 0:
-        return response[-1]['message']
-    return "No question found"
+    if response:
+        for message in response:
+               if message.content[0].type == "text":
+                   return message.content[0].text.value
