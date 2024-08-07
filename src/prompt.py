@@ -29,14 +29,14 @@ You are a top-tier assessor for automation and programming tools, possessing com
 
 ### Example Question Structure ```(For your reference)```:
 
-1. **Easy Question (Conceptual)**:
+1. ** Example for Easy Question (Conceptual)**:
    - What is the primary purpose of a loop in programming?
      - A) To store data
      - B) To execute a block of code repeatedly
      - C) To define a variable
      - D) To create a user interface
 
-2. **Medium Question (Code Snippet)**:
+2. **Example for Medium Question (Code Snippet)**:
    - What will be the output of the following code snippet?
      ```python
      def add(x, y):
@@ -49,7 +49,7 @@ You are a top-tier assessor for automation and programming tools, possessing com
      - C) 2
      - D) Error
 
-3. **Hard Question (Advanced Concept)**:
+3. **Example for Hard Question (Advanced Concept)**:
    - In a RESTful API, which HTTP method is typically used to update an existing resource?
      - A) GET
      - B) POST
@@ -57,22 +57,22 @@ You are a top-tier assessor for automation and programming tools, possessing com
      - D) DELETE
 
 Follow this structure for the entire assessment, ensuring clarity, fairness, and an accurate measurement of the candidate's skills.
-WARNING : ```DON'T EXPOSE THE TYPE/LEVEL QUESTION TO THE USER AND ANSWER```, ABOVE EXAMPLE IS FOR UNDERSTANDING PURPOSE TO GENERATE THE QUESTION FOR CANDIDATE. KEEP IT CONFIDENTIAL.
+WARNING : ```DON'T EXPOSE THE TYPE/LEVEL OF QUESTION AND ANSWER TO THE CANDIDATE```. ABOVE EXAMPLE IS FOR UNDERSTANDING PURPOSE TO GENERATE THE QUESTION, KEEP IT CONFIDENTIAL.
  """
 
 
 def first_prompt(skill):
-    return f"""Generate a question based on the candidate skills - {skill} follow the instructions carefully."""
+    return f"""Generate a question based on the candidate skills - {skill} follow the provided instructions carefully."""
 
-def evaluate_and_generate_next_question(candidate_response, question,qno):
+def evaluate_and_generate_next_question(candidate_response, question):
     return f""" candidate has choosen answer - {candidate_response} for Quesiton - {question}. Evaluate the answer and keep in memory for generating feedback,
 If the answer of the user is right increase the level of difficulty by one, or ask question with same difficulty level. 
-```Now you have to generate only question with 4 options for that. If the Question number - {qno} is 11 genrate feedback and don't generate question ```
-DO NOT GIVE YOUR FEEDBACK NOW, YOU'LL BE PROMPTED TO GENERATE FEEDBACK. FOR NOW BASED ON THE CANDIDATE'S ANSWER GENERATE NEXT QUESTION WITH 4 OPTIONS
+```DO NOT GIVE YOUR FEEDBACK NOW, YOU'LL BE PROMPTED TO GENERATE FEEDBACK. FOR NOW BASED ON THE CANDIDATE'S ANSWER GENERATE NEXT QUESTION WITH 4 OPTIONS```
 """
 
 def generate_feedback_prompt(performance):
-    return f"Generate feedback on candidates performance - {performance}"
+    return f"Generate feedback on candidates performance - {performance}, 
+```REMEMBER YOUR FEEDBACK MUST BE SIMPLE AND SHORT ```"
 
 def extract_question(response):
     if response:
